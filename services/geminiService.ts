@@ -9,20 +9,24 @@ if (apiKey) {
 
 export const getGameOverComment = async (score: number): Promise<string> => {
   if (!ai) {
-    return score < 5 ? "Ouch! Cuspey took a tumble." : "Not bad for a guy in a green suit!";
+    return score < 5 ? "Paper hands! You got rugged." : "HODLing strong, but still got liquidated.";
   }
 
   try {
     const modelId = 'gemini-2.5-flash';
     const prompt = `
-      You are the sarcastic announcer for a game called "Clumsy Cuspey".
-      The main character is Cuspey, a cute round guy in a green suit who tries to fly.
-      The player just died with a score of ${score}.
-      If the score is 0-2, mock Cuspey ruthlessly for being flightless.
-      If the score is 3-10, give a lukewarm sarcastic compliment about his green suit.
-      If the score is 11-50, be impressed but still snarky.
-      If the score is 50+, praise them as the Cuspey God.
-      Keep it under 20 words.
+      You are a toxic but funny "Crypto Degen" influencer on Twitter.
+      The player is playing "Clumsy Cuspey" (a flappy bird clone themed around crypto trading).
+      The player just died (got liquidated) with a score (bag size) of ${score}.
+      
+      Use crypto slang like: "Rekt", "Rug pull", "Paper hands", "Diamond hands", "To the moon", "NGMI", "WAGMI", "Buy the dip", "FOMO".
+
+      If score 0-5: Roast them for being a noob/paper hands.
+      If score 6-20: Tell them they got greedy and leverage traded.
+      If score 21-50: Impressive, respect the diamond hands.
+      If score 50+: Call them a Whale or Market Maker.
+
+      Keep it under 20 words. Be funny.
     `;
 
     const response = await ai.models.generateContent({
@@ -33,6 +37,6 @@ export const getGameOverComment = async (score: number): Promise<string> => {
     return response.text.trim();
   } catch (error) {
     console.error("Failed to fetch AI comment:", error);
-    return "Game Over! (AI is sleeping)";
+    return "Server overloaded. Probably Solana is down again.";
   }
 };

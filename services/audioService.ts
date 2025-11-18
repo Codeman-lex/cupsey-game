@@ -128,6 +128,54 @@ class AudioController {
     osc.stop(now + 0.4);
   }
 
+  public playCountdown() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.type = 'sine';
+    const now = this.ctx.currentTime;
+
+    // High blip
+    osc.frequency.setValueAtTime(880, now);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+    osc.start(now);
+    osc.stop(now + 0.1);
+  }
+
+  public playGo() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.type = 'sawtooth';
+    const now = this.ctx.currentTime;
+
+    // Air horn / Buzz style
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.linearRampToValueAtTime(300, now + 0.3);
+
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+
+    osc.start(now);
+    osc.stop(now + 0.4);
+  }
+
   // --- Music Loop ---
 
   private scheduleNote() {

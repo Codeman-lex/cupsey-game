@@ -1,13 +1,24 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BIRD_WIDTH, BIRD_HEIGHT, BIRD_X_POSITION } from '../constants';
 
 interface BirdProps {
   y: number;
   rotation: number;
+  jumpCount: number;
+  isHovering?: boolean; // New prop for countdown state
 }
 
-const Bird: React.FC<BirdProps> = ({ y, rotation }) => {
+const Bird: React.FC<BirdProps> = ({ y, rotation, jumpCount, isHovering = false }) => {
+  const [isSomersaulting, setIsSomersaulting] = useState(false);
+
+  useEffect(() => {
+    if (jumpCount > 0) {
+      setIsSomersaulting(true);
+      const timer = setTimeout(() => setIsSomersaulting(false), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [jumpCount]);
+
   return (
     <div
       style={{
@@ -16,68 +27,87 @@ const Bird: React.FC<BirdProps> = ({ y, rotation }) => {
         top: y,
         width: BIRD_WIDTH,
         height: BIRD_HEIGHT,
-        transform: `rotate(${rotation}deg)`,
-        transition: 'transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275)', 
         zIndex: 20,
+        transform: `rotate(${rotation}deg)`,
+        transformOrigin: 'center center',
       }}
+      className={isHovering ? 'animate-hover' : ''}
     >
-      {/* Cuspey Character Container - Centered */}
-      <div className="relative w-full h-full">
+        {/* Rocket Flame (Appears behind him) */}
+        <div className="absolute top-[60%] left-[-15px] w-8 h-8 z-0 rotate-90 origin-right opacity-80">
+             <div className="w-full h-full bg-orange-500 rounded-full blur-[4px] animate-pulse"></div>
+             <div className="absolute top-1 left-1 w-4 h-4 bg-yellow-300 rounded-full blur-[2px]"></div>
+        </div>
+
+      {/* Somersault Container */}
+      <div 
+        className={`w-full h-full relative z-10 ${isSomersaulting ? 'animate-somersault' : ''}`}
+      >
+        {/* --- CUSPEY CHARACTER DESIGN --- */}
         
-        {/* Shadow underneath */}
-        <div className="absolute -bottom-2 left-1 w-[90%] h-2 bg-black/20 rounded-full blur-[2px]"></div>
-
-        {/* --- THE BODY (Green Onesie) --- */}
-        {/* It sits lower than the head and is wider at the bottom */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[50%] bg-[#4CAF50] rounded-[14px] border-2 border-[#2E7D32] shadow-inner z-10 flex justify-center">
-             {/* Belly highlight */}
-             <div className="w-[60%] h-[60%] bg-white/10 rounded-full mt-1 blur-[1px]"></div>
+        {/* Body (Green Suit) */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[75%] h-[55%] bg-gradient-to-br from-[#4CAF50] to-[#2E7D32] rounded-2xl shadow-inner z-10 flex justify-center items-center border-[1.5px] border-[#1b5e20]">
+             {/* Belly shine */}
+             <div className="w-[60%] h-[50%] bg-white/20 rounded-full mb-1 blur-[1px]"></div>
         </div>
 
-        {/* Legs (Little Green Nubs) */}
-        <div className="absolute bottom-[-2px] left-[25%] w-[10px] h-[10px] bg-[#4CAF50] rounded-full border-2 border-[#2E7D32] z-0"></div>
-        <div className="absolute bottom-[-2px] right-[25%] w-[10px] h-[10px] bg-[#4CAF50] rounded-full border-2 border-[#2E7D32] z-0"></div>
+        {/* Legs */}
+        <div className="absolute bottom-[-4px] left-[25%] w-[12px] h-[12px] bg-[#388E3C] rounded-full border border-[#1b5e20] z-0"></div>
+        <div className="absolute bottom-[-4px] right-[25%] w-[12px] h-[12px] bg-[#388E3C] rounded-full border border-[#1b5e20] z-0"></div>
 
-        {/* --- THE HEAD (White & Round) --- */}
-        {/* Head is large, takes up top 65% */}
-        <div className="absolute top-[-5px] left-1/2 -translate-x-1/2 w-[95%] h-[70%] bg-[#FFF9F0] rounded-[50%] border-2 border-gray-300 z-20 shadow-sm overflow-hidden">
-           {/* Forehead Shine */}
-           <div className="absolute top-1 left-[20%] w-[40%] h-[30%] bg-white rounded-full blur-[2px] opacity-60"></div>
+        {/* Head (White & Round) */}
+        <div className="absolute top-[-8px] left-1/2 -translate-x-1/2 w-[100%] h-[75%] bg-gradient-to-b from-white to-[#f0f0f0] rounded-full border-[1.5px] border-gray-300 z-20 shadow-[0_2px_5px_rgba(0,0,0,0.1)] overflow-hidden">
+           {/* 3D Sphere Highlight */}
+           <div className="absolute top-2 left-[20%] w-[40%] h-[30%] bg-white rounded-full blur-[3px] opacity-90"></div>
         </div>
 
-        {/* --- FACE FEATURES (On top of head) --- */}
-        <div className="absolute top-[-5px] left-1/2 -translate-x-1/2 w-[95%] h-[70%] z-30">
-            {/* Left Eye - Tall Oval */}
-            <div className="absolute top-[30%] left-[22%] w-[18%] h-[28%] bg-black rounded-[50%] rotate-[-5deg]">
-                <div className="absolute top-[15%] right-[20%] w-[35%] h-[35%] bg-white rounded-full"></div>
+        {/* Face Layer */}
+        <div className="absolute top-[-8px] left-1/2 -translate-x-1/2 w-[100%] h-[75%] z-30">
+            {/* Left Eye */}
+            <div className="absolute top-[35%] left-[20%] w-[22%] h-[32%] bg-black rounded-full rotate-[-5deg]">
+                <div className="absolute top-[20%] right-[20%] w-[35%] h-[35%] bg-white rounded-full shadow-[0_0_2px_white]"></div>
+                <div className="absolute bottom-[15%] left-[25%] w-[15%] h-[15%] bg-white/50 rounded-full"></div>
             </div>
             
-            {/* Right Eye - Tall Oval */}
-            <div className="absolute top-[30%] right-[22%] w-[18%] h-[28%] bg-black rounded-[50%] rotate-[5deg]">
-                 <div className="absolute top-[15%] right-[20%] w-[35%] h-[35%] bg-white rounded-full"></div>
+            {/* Right Eye */}
+            <div className="absolute top-[35%] right-[20%] w-[22%] h-[32%] bg-black rounded-full rotate-[5deg]">
+                 <div className="absolute top-[20%] right-[20%] w-[35%] h-[35%] bg-white rounded-full shadow-[0_0_2px_white]"></div>
+                 <div className="absolute bottom-[15%] left-[25%] w-[15%] h-[15%] bg-white/50 rounded-full"></div>
             </div>
 
-            {/* Cheeks - Pink & Round */}
-            <div className="absolute top-[55%] left-[15%] w-[15%] h-[10%] bg-[#FF8A80] rounded-full opacity-60 blur-[0.5px]"></div>
-            <div className="absolute top-[55%] right-[15%] w-[15%] h-[10%] bg-[#FF8A80] rounded-full opacity-60 blur-[0.5px]"></div>
+            {/* Pink Cheeks */}
+            <div className="absolute top-[65%] left-[12%] w-[18%] h-[12%] bg-[#FF8A80] rounded-full opacity-70 blur-[1px]"></div>
+            <div className="absolute top-[65%] right-[12%] w-[18%] h-[12%] bg-[#FF8A80] rounded-full opacity-70 blur-[1px]"></div>
             
-            {/* Mouth - Small Smile */}
-            <div className="absolute top-[58%] left-1/2 -translate-x-1/2 w-[15%] h-[10%] border-b-2 border-black/80 rounded-[50%]"></div>
+            {/* Mouth */}
+            <div className="absolute top-[68%] left-1/2 -translate-x-1/2 w-[12%] h-[6%] border-b-[2.5px] border-black/80 rounded-full"></div>
         </div>
 
-        {/* --- ARMS (The Pointing Hand) --- */}
-        {/* Right Arm (Back) */}
-        <div className="absolute top-[45%] right-[-2px] w-[14px] h-[14px] bg-[#4CAF50] rounded-full border-2 border-[#2E7D32] z-0"></div>
-        
-        {/* Left Arm (Front - Pointing Up!) */}
-        {/* This mimics the image where he points up */}
-        <div className="absolute top-[40%] left-[-6px] w-[16px] h-[22px] bg-[#4CAF50] rounded-full border-2 border-[#2E7D32] z-30 rotate-[-20deg] flex items-start justify-center overflow-hidden">
-            <div className="w-full h-full bg-gradient-to-t from-black/10 to-transparent"></div>
+        {/* Front Pointing Hand */}
+        <div className="absolute top-[45%] left-[-8px] z-30">
+            <div className="w-[16px] h-[16px] bg-[#4CAF50] rounded-full border border-[#1b5e20]"></div>
+            <div className="absolute -top-[8px] left-[2px] w-[10px] h-[16px] bg-[#4CAF50] rounded-full border border-[#1b5e20] rotate-[-15deg] flex items-center justify-center">
+                 <div className="w-[6px] h-[8px] bg-white/20 rounded-full mt-1"></div>
+            </div>
         </div>
-        {/* The Finger */}
-        <div className="absolute top-[32%] left-[-8px] w-[8px] h-[14px] bg-[#4CAF50] rounded-full border-2 border-[#2E7D32] z-20 rotate-[-30deg]"></div>
 
       </div>
+      <style>{`
+        @keyframes somersault {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .animate-somersault {
+          animation: somersault 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        @keyframes hover {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
+        }
+        .animate-hover {
+          animation: hover 1.5s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 };

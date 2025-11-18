@@ -11,6 +11,11 @@ interface PipeProps {
 const Pipe: React.FC<PipeProps> = ({ data, gameHeight, groundHeight }) => {
   const bottomPipeHeight = gameHeight - groundHeight - data.topHeight - PIPE_GAP;
 
+  // Shared class for the pipe body gradient
+  const pipeBodyClass = "bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-700 border-x-2 border-emerald-900";
+  // Shared class for the pipe cap gradient
+  const pipeCapClass = "bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-700 border-2 border-emerald-900 shadow-md";
+
   return (
     <>
       {/* Top Pipe */}
@@ -22,12 +27,18 @@ const Pipe: React.FC<PipeProps> = ({ data, gameHeight, groundHeight }) => {
           width: PIPE_WIDTH,
           height: data.topHeight,
         }}
-        className="bg-green-500 border-2 border-black z-10"
+        className={`z-10 ${pipeBodyClass}`}
       >
-        {/* Pipe Cap */}
-        <div className="absolute bottom-0 left-[-4px] w-[calc(100%+8px)] h-6 bg-green-500 border-2 border-black"></div>
-        {/* Highlight */}
-        <div className="absolute top-0 left-2 w-2 h-full bg-green-300 opacity-30"></div>
+        {/* Shine Highlight */}
+        <div className="absolute top-0 left-2 w-3 h-full bg-white opacity-20"></div>
+        <div className="absolute top-0 right-1 w-1 h-full bg-black opacity-20"></div>
+
+        {/* Pipe Cap (Bottom of top pipe) */}
+        <div className={`absolute bottom-0 left-[-6px] w-[calc(100%+12px)] h-8 ${pipeCapClass} flex flex-col justify-center`}>
+             <div className="w-full h-[1px] bg-emerald-800 opacity-30"></div>
+             {/* Cap Shine */}
+             <div className="absolute top-0 left-3 w-3 h-full bg-white opacity-20"></div>
+        </div>
       </div>
 
       {/* Bottom Pipe */}
@@ -39,12 +50,18 @@ const Pipe: React.FC<PipeProps> = ({ data, gameHeight, groundHeight }) => {
           width: PIPE_WIDTH,
           height: bottomPipeHeight,
         }}
-        className="bg-green-500 border-2 border-black z-10"
+        className={`z-10 ${pipeBodyClass}`}
       >
-        {/* Pipe Cap */}
-        <div className="absolute top-0 left-[-4px] w-[calc(100%+8px)] h-6 bg-green-500 border-2 border-black"></div>
-         {/* Highlight */}
-         <div className="absolute top-0 left-2 w-2 h-full bg-green-300 opacity-30"></div>
+        {/* Shine Highlight */}
+        <div className="absolute top-0 left-2 w-3 h-full bg-white opacity-20"></div>
+        <div className="absolute top-0 right-1 w-1 h-full bg-black opacity-20"></div>
+
+        {/* Pipe Cap (Top of bottom pipe) */}
+        <div className={`absolute top-0 left-[-6px] w-[calc(100%+12px)] h-8 ${pipeCapClass} flex flex-col justify-center`}>
+            <div className="w-full h-[1px] bg-emerald-800 opacity-30"></div>
+            {/* Cap Shine */}
+            <div className="absolute top-0 left-3 w-3 h-full bg-white opacity-20"></div>
+        </div>
       </div>
     </>
   );

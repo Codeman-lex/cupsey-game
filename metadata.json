@@ -1,0 +1,5 @@
+{
+  "name": "Clumsy Bird React",
+  "description": "A faithful web-based clone of the classic Clumsy Bird game using React, Tailwind CSS, and Gemini AI for game-over commentary.",
+  "requestFramePermissions": []
+}
